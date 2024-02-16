@@ -57,24 +57,29 @@ function updateMailtoLink() {
     var recipient = document.getElementById('recipient').value;
     var subject = document.getElementById('subject').value;
     var body = document.getElementById('body').value;
-    var sendCopyChecked = document.getElementById('sendCopy').checked; // Get the state of the checkbox
+    var sendCopyChecked = document.getElementById('sendCopy').checked;
 
-    // Append "With gratitude, [Your Name]" to the body if 'from' is not empty
     var fullBody = body + (from ? "\n\nWith gratitude,\n" + from : "");
 
     subject = encodeURIComponent(subject);
-    fullBody = encodeURIComponent(fullBody); // Encode the full body for the mailto link
+    fullBody = encodeURIComponent(fullBody);
 
     var link = `mailto:${recipient}?subject=${subject}&body=${fullBody}`;
 
-    // Include BCC parameter in the mailto link if the checkbox is checked
-    if (sendCopyChecked) {
-        var bcc = "fremont_mail_counter@zelig.me";
-        link += `&bcc=${bcc}`;
-    }
-
-    document.getElementById('mailtoLink').href = link;
+    // Load BCC email addresses from the JSON file
+    fetch('bccRecipients.json')
+        .then(response => response.json())
+        .then(data => {
+            if (sendCopyChecked && data.bccEmails.length > 0) {
+                // Join all BCC email addresses with a comma if there are multiple
+                var bcc = data.bccEmails.join(',');
+                link += `&bcc=${bcc}`;
+                document.getElementById('mailtoLink').href = link;
+            }
+        })
+        .catch(error => console.error('Failed to load BCC email addresses:', error));
 }
+
 
 function loadRecipients() {
     fetch('recipients.json')
