@@ -1,7 +1,7 @@
 
 
 function loadSubjects() {
-    fetch('subjectsAndBodies.json')
+    fetch('data/subjectsAndBodies.json')
         .then(response => response.json())
         .then(subjectsAndBodies => {
             const subjectSelect = document.getElementById('subjectSelect');
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function populateBody() {
-    fetch('subjectsAndBodies.json')
+    fetch('data/subjectsAndBodies.json')
         .then(response => response.json())
         .then(subjectsAndBodies => {
             var selectedIndex = document.getElementById('subjectSelect').value;
@@ -67,7 +67,7 @@ function updateMailtoLink() {
     var link = `mailto:${recipient}?subject=${subject}&body=${fullBody}`;
 
     // Load BCC email addresses from the JSON file
-    fetch('bccRecipients.json')
+    fetch('data/bccRecipients.json')
         .then(response => response.json())
         .then(data => {
             if (sendCopyChecked && data.bccEmails.length > 0) {
@@ -82,7 +82,7 @@ function updateMailtoLink() {
 
 
 function loadRecipients() {
-    fetch('recipients.json')
+    fetch('data/recipients.json')
         .then(response => response.json())
         .then(data => {
             const recipientSelect = document.getElementById('recipient');
