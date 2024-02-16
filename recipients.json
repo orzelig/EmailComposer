@@ -1,0 +1,32 @@
+{
+  "recipients": [
+    {
+      "name": "Mayor Lily Mei",
+      "email": "lmei@fremont.gov"
+    },
+    {
+      "name": "Council Member Yang Shao",
+      "email": "yshao@fremont.gov"
+    },
+    {
+      "name": "Council Member Teresa Keng",
+      "email": "tkeng@fremont.gov"
+    },
+    {
+      "name": "Council Member Desrie Campbell",
+      "email": "dcampbell@fremont.gov"
+    },
+     {
+      "name": "Council Member Jennie Kassan",
+      "email": "jkassan@fremont.gov"
+    },
+    {
+      "name": "Council Member Raj Salwan",
+      "email": "rsalwan@fremont.gov"
+    },
+    {
+      "name": "Council Member Teresa Cox",
+      "email": "tcox@fremont.gov"
+    }
+  ]
+}

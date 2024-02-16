@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fremont Email Composer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h2>Fremont Email Composer</h2>
+
+    <div id="emailForm">
+        <div class="form-group">
+            <label for="from">From (Your Name):</label>
+            <input type="text" id="from" name="from" placeholder="Enter your name" oninput="updateMailtoLink()">
+        </div>
+        <div class="form-group">
+            <label for="recipient">Recipient:</label>
+            <select id="recipient" name="recipient" onchange="updateMailtoLink()">
+                <!-- Recipient options will be populated here by JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="subjectSelect">Choose a Subject:</label>
+            <select id="subjectSelect" onchange="populateBody()">
+                
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="subject">Edit Subject:</label>
+            <input type="text" id="subject" name="subject" value="" oninput="updateMailtoLink()">
+        </div>
+        <div class="form-group">
+            <label for="body">Body:</label>
+            <textarea id="body" name="body" rows="10" oninput="updateMailtoLink()"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="sendCopy">Send a copy to us for counting:</label>
+            <input type="checkbox" id="sendCopy" name="sendCopy" checked>
+        </div>
+    </div>
+
+    <a id="mailtoLink" href="#" onclick="updateMailtoLink();">Compose Email</a>
+    <script src="script.js"></script> <!-- Link to your external JavaScript file -->
+
+</body>
+</html>
