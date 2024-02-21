@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,11 +16,12 @@
             <input type="text" id="from" name="from" placeholder="Enter your name" oninput="updateMailtoLink()">
         </div>
         <div class="form-group">
-            <label for="recipient">Recipient:</label>
-            <select id="recipient" name="recipient" onchange="updateMailtoLink()">
+            <label for="recipient">Recipients:</label>
+            <select id="recipient" name="recipient" multiple size="5" onchange="updateMailtoLink()">
                 <!-- Recipient options will be populated here by JavaScript -->
             </select>
         </div>
+
         <div class="form-group">
             <label for="subjectSelect">Choose a Subject:</label>
             <select id="subjectSelect" onchange="populateBody()">
