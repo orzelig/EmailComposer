@@ -54,7 +54,7 @@ function populateBody() {
 
 function updateMailtoLink() {
     var from = document.getElementById('from').value;
-    var recipient = document.getElementById('recipient').value;
+    var recipients = Array.from(document.getElementById('recipient').selectedOptions).map(option => option.value);
     var subject = document.getElementById('subject').value;
     var body = document.getElementById('body').value;
     var sendCopyChecked = document.getElementById('sendCopy').checked;
@@ -64,21 +64,22 @@ function updateMailtoLink() {
     subject = encodeURIComponent(subject);
     fullBody = encodeURIComponent(fullBody);
 
-    var link = `mailto:${recipient}?subject=${subject}&body=${fullBody}`;
+    var recipientEmails = recipients.join(',');
+    var link = `mailto:${recipientEmails}?subject=${subject}&body=${fullBody}`;
 
     // Load BCC email addresses from the JSON file
     fetch('data/bccRecipients.json')
         .then(response => response.json())
         .then(data => {
-            if (sendCopyChecked && data.bccEmails.length > 0) {
-                // Join all BCC email addresses with a comma if there are multiple
-                var bcc = data.bccEmails.join(',');
-                link += `&bcc=${bcc}`;
-                document.getElementById('mailtoLink').href = link;
-            }
-        })
-        .catch(error => console.error('Failed to load BCC email addresses:', error));
+        if (sendCopyChecked && data.bccEmails.length > 0) {
+            var bcc = data.bccEmails.join(',');
+            link += `&bcc=${bcc}`;
+        }
+        document.getElementById('mailtoLink').href = link;
+    })
+    .catch(error => console.error('Failed to load BCC email addresses:', error));
 }
+
 
 
 function loadRecipients() {
