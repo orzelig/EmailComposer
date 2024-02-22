@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit JSON Structure</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .editor { margin-bottom: 20px; }
+        textarea { width: 100%; height: 200px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Edit JSON Structure</h1>
+    <div class="editor">
+        <h2>JSON Editor</h2>
+        <textarea id="jsonInput"></textarea>
+        <button onclick="updateJSON()">Save Changes</button>
+    </div>
+    <div>
+        <h2>JSON Preview</h2>
+        <pre id="jsonPreview"></pre>
+    </div>
+
+    <script>
+        let jsonData = [
+            // Your JSON structure here
+        ];
+
+        function updateJSON() {
+            try {
+                // Parse the input from the textarea to ensure it's valid JSON
+                jsonData = JSON.parse(document.getElementById('jsonInput').value);
+                // Update the preview
+                document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
+            } catch (e) {
+                alert('Invalid JSON!');
+            }
+        }
+
+        function init() {
+            // Initialize the textarea with the existing JSON data
+            document.getElementById('jsonInput').value = JSON.stringify(jsonData, null, 2);
+            // Also update the preview
+            document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
+        }
+
+        // Initialize the editor with the JSON data when the page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
