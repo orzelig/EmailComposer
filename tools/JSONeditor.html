@@ -83,16 +83,24 @@
   }
 
   function removeEntry() {
-    const index = document.getElementById('entrySelect').value;
-    if (entries.length > 1) {
-      entries.splice(index, 1);
-      updateDropdown();
-      document.getElementById('entrySelect').value = Math.min(index, entries.length - 1);
-      loadEntry();
+    const index = parseInt(document.getElementById('entrySelect').value, 10); // Get the currently selected index
+    if (entries.length > 1) { // Ensure there's more than one entry, to keep at least one
+        entries.splice(index, 1); // Remove the selected entry
+        updateDropdown(); // Update the dropdown to reflect the change
+
+        // Adjust the selected index if the last entry was removed
+        if (index >= entries.length) {
+            document.getElementById('entrySelect').value = entries.length - 1; // Select the new last entry
+        } else {
+            document.getElementById('entrySelect').value = index; // Keep the current index selected
+        }
+        
+        loadEntry(); // Load the newly selected entry into the input fields
     } else {
-      alert("At least one entry must remain.");
+        alert("At least one entry must remain."); // Prevent removal if only one entry exists
     }
-  }
+}
+
 
   function init() {
     // Initialize with one example entry
