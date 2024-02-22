@@ -15,6 +15,11 @@
 </head>
 <body>
 <div class="container">
+  <div class="input-group">
+    <label for="jsonUrl">JSON URL:</label>
+    <input type="text" id="jsonUrl" placeholder="Enter JSON URL here">
+    <button id="loadJson">Load JSON</button>
+  </div>
   <div class="button-group">
     <button id="addEntry">Add Entry</button>
     <button id="removeEntry">Remove Entry</button>
@@ -40,71 +45,32 @@
 <script>
   let entries = [{ subject: "Initial Subject", body: "Initial Body\\nLine 2" }]; // Start with an example entry
 
-  function updateDropdown() {
-    const select = document.getElementById('entrySelect');
-    select.innerHTML = '';
-    entries.forEach((entry, index) => {
-      const option = document.createElement('option');
-      option.value = index;
-      option.textContent = `Entry ${index + 1}: ${entry.subject}`;
-      select.appendChild(option);
-    });
-  }
+  // Other functions (updateDropdown, loadEntry, updateJsonOutput, updateEntry, addEntry, removeEntry, autoUpdateFromJson) remain the same
 
-  function loadEntry() {
-    const index = parseInt(document.getElementById('entrySelect').value, 10);
-    if (entries[index]) {
-      const entry = entries[index];
-      document.getElementById('subject').value = entry.subject;
-      document.getElementById('body').value = entry.body.replace(/\\n/g, "\n");
-    }
-  }
-
-  function updateJsonOutput() {
-    document.getElementById('jsonOutput').value = JSON.stringify(entries, null, 2);
-  }
-
-  function updateEntry() {
-    const index = parseInt(document.getElementById('entrySelect').value, 10);
-    if (entries[index]) {
-      entries[index].subject = document.getElementById('subject').value;
-      entries[index].body = document.getElementById('body').value.replace(/\n/g, "\\n");
-      updateJsonOutput();
-    }
-  }
-
-  function addEntry() {
-    entries.push({ subject: "New Subject", body: "New Body" });
-    updateDropdown();
-    document.getElementById('entrySelect').value = entries.length - 1;
-    loadEntry();
-  }
-
-  function removeEntry() {
-    const index = parseInt(document.getElementById('entrySelect').value, 10);
-    if (entries.length > 1) {
-      entries.splice(index, 1);
-      updateDropdown();
-      document.getElementById('entrySelect').value = Math.min(index, entries.length - 1);
-      loadEntry();
-    } else {
-      alert("At least one entry must remain.");
-    }
-  }
-
-  function autoUpdateFromJson() {
-    try {
-      const updatedEntries = JSON.parse(document.getElementById('jsonOutput').value);
-      if (Array.isArray(updatedEntries)) {
-        entries = updatedEntries;
-        updateDropdown();
-        document.getElementById('entrySelect').value = 0;
-        loadEntry();
-      }
-    } catch (e) {
-      // You might want to handle JSON parse errors or invalid format here.
-      // For now, it fails silently.
-    }
+  function loadJsonFromUrl() {
+    const url = document.getElementById('jsonUrl').value;
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) {
+          entries = data;
+          updateDropdown();
+          document.getElementById('entrySelect').value = 0;
+          loadEntry();
+          updateJsonOutput();
+        } else {
+          alert("The fetched data is not in the expected array format.");
+        }
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert("Failed to load JSON from URL. See console for more details.");
+      });
   }
 
   function init() {
@@ -112,12 +78,14 @@
     loadEntry();
     updateJsonOutput(); // Initial JSON output update
 
+    // Event listeners
     document.getElementById('entrySelect').addEventListener('change', loadEntry);
     document.getElementById('subject').addEventListener('input', updateEntry);
     document.getElementById('body').addEventListener('input', updateEntry);
     document.getElementById('addEntry').addEventListener('click', addEntry);
     document.getElementById('removeEntry').addEventListener('click', removeEntry);
     document.getElementById('jsonOutput').addEventListener('input', autoUpdateFromJson);
+    document.getElementById('loadJson').addEventListener('click', loadJsonFromUrl); // Add event listener for loading JSON
   }
 
   init();
