@@ -7,13 +7,18 @@
 <style>
   body { font-family: Arial, sans-serif; }
   .container { margin: 20px; }
-  .input-group { margin-bottom: 20px; }
-  textarea, select, input { width: 100%; }
+  .input-group, .button-group { margin-bottom: 20px; }
+  textarea, select, input, button { width: 100%; }
   textarea { height: 100px; }
+  button { padding: 10px; cursor: pointer; }
 </style>
 </head>
 <body>
 <div class="container">
+  <div class="button-group">
+    <button id="addEntry">Add Entry</button>
+    <button id="removeEntry">Remove Entry</button>
+  </div>
   <div class="input-group">
     <label for="entrySelect">Select Entry:</label>
     <select id="entrySelect"></select>
@@ -35,7 +40,6 @@
 <script>
   let entries = []; // Array to hold the JSON entries
 
-  // Function to update the dropdown based on entries
   function updateDropdown() {
     const select = document.getElementById('entrySelect');
     select.innerHTML = ''; // Clear existing options
@@ -47,45 +51,63 @@
     });
   }
 
-  // Function to load the selected entry into the input fields
   function loadEntry() {
     const index = document.getElementById('entrySelect').value;
-    const entry = entries[index];
-    document.getElementById('subject').value = entry.subject;
-    document.getElementById('body').value = entry.body.replace(/\\n/g, "\n");
+    if (entries[index]) {
+      const entry = entries[index];
+      document.getElementById('subject').value = entry.subject;
+      document.getElementById('body').value = entry.body.replace(/\\n/g, "\n");
+    }
     updateJsonOutput();
   }
 
-  // Function to update the JSON output
   function updateJsonOutput() {
     document.getElementById('jsonOutput').value = JSON.stringify(entries, null, 2);
   }
 
-  // Function to handle changes in input fields and update the corresponding entry
   function updateEntry() {
     const index = document.getElementById('entrySelect').value;
-    entries[index].subject = document.getElementById('subject').value;
-    entries[index].body = document.getElementById('body').value.replace(/\n/g, "\\n");
-    updateJsonOutput();
+    if (entries[index]) {
+      entries[index].subject = document.getElementById('subject').value;
+      entries[index].body = document.getElementById('body').value.replace(/\n/g, "\\n");
+      updateJsonOutput();
+    }
   }
 
-  // Initial setup
-  function init() {
-    // Example entries (you can replace these with your actual entries)
-    entries = [
-      { subject: "Subject 1", body: "Body 1\\nLine 2" },
-      { subject: "Subject 2", body: "Body 2\\nLine 2" },
-      { subject: "Subject 3", body: "Body 3\\nLine 2" }
-    ];
+  function addEntry() {
+    const newEntry = { subject: "New Subject", body: "New Body" };
+    entries.push(newEntry);
     updateDropdown();
-    loadEntry(); // Load the first entry by default
+    document.getElementById('entrySelect').value = entries.length - 1;
+    loadEntry();
+  }
+
+  function removeEntry() {
+    const index = document.getElementById('entrySelect').value;
+    if (entries.length > 1) {
+      entries.splice(index, 1);
+      updateDropdown();
+      document.getElementById('entrySelect').value = Math.min(index, entries.length - 1);
+      loadEntry();
+    } else {
+      alert("At least one entry must remain.");
+    }
+  }
+
+  function init() {
+    // Initialize with one example entry
+    entries = [{ subject: "Initial Subject", body: "Initial Body\\nLine 2" }];
+    updateDropdown();
+    loadEntry();
 
     document.getElementById('entrySelect').addEventListener('change', loadEntry);
     document.getElementById('subject').addEventListener('input', updateEntry);
     document.getElementById('body').addEventListener('input', updateEntry);
+    document.getElementById('addEntry').addEventListener('click', addEntry);
+    document.getElementById('removeEntry').addEventListener('click', removeEntry);
   }
 
-  init(); // Initialize the editor
+  init();
 </script>
 </body>
 </html>
