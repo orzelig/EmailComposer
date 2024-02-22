@@ -18,6 +18,7 @@
   <div class="button-group">
     <button id="addEntry">Add Entry</button>
     <button id="removeEntry">Remove Entry</button>
+    <button id="updateFromJson">Update From JSON</button>
   </div>
   <div class="input-group">
     <label for="entrySelect">Select Entry:</label>
@@ -33,16 +34,16 @@
   </div>
   <div class="input-group">
     <label for="jsonOutput">JSON Output:</label>
-    <textarea id="jsonOutput" readonly></textarea>
+    <textarea id="jsonOutput"></textarea> <!-- Removed readonly attribute -->
   </div>
 </div>
 
 <script>
-  let entries = []; // Array to hold the JSON entries
+  let entries = [{ subject: "Initial Subject", body: "Initial Body\\nLine 2" }]; // Start with an example entry
 
   function updateDropdown() {
     const select = document.getElementById('entrySelect');
-    select.innerHTML = ''; // Clear existing options
+    select.innerHTML = '';
     entries.forEach((entry, index) => {
       const option = document.createElement('option');
       option.value = index;
@@ -52,13 +53,12 @@
   }
 
   function loadEntry() {
-    const index = document.getElementById('entrySelect').value;
+    const index = parseInt(document.getElementById('entrySelect').value, 10);
     if (entries[index]) {
       const entry = entries[index];
       document.getElementById('subject').value = entry.subject;
       document.getElementById('body').value = entry.body.replace(/\\n/g, "\n");
     }
-    updateJsonOutput();
   }
 
   function updateJsonOutput() {
@@ -66,7 +66,7 @@
   }
 
   function updateEntry() {
-    const index = document.getElementById('entrySelect').value;
+    const index = parseInt(document.getElementById('entrySelect').value, 10);
     if (entries[index]) {
       entries[index].subject = document.getElementById('subject').value;
       entries[index].body = document.getElementById('body').value.replace(/\n/g, "\\n");
@@ -75,36 +75,41 @@
   }
 
   function addEntry() {
-    const newEntry = { subject: "New Subject", body: "New Body" };
-    entries.push(newEntry);
+    entries.push({ subject: "New Subject", body: "New Body" });
     updateDropdown();
     document.getElementById('entrySelect').value = entries.length - 1;
     loadEntry();
   }
 
   function removeEntry() {
-    const index = parseInt(document.getElementById('entrySelect').value, 10); // Get the currently selected index
-    if (entries.length > 1) { // Ensure there's more than one entry, to keep at least one
-        entries.splice(index, 1); // Remove the selected entry
-        updateDropdown(); // Update the dropdown to reflect the change
-
-        // Adjust the selected index if the last entry was removed
-        if (index >= entries.length) {
-            document.getElementById('entrySelect').value = entries.length - 1; // Select the new last entry
-        } else {
-            document.getElementById('entrySelect').value = index; // Keep the current index selected
-        }
-        
-        loadEntry(); // Load the newly selected entry into the input fields
+    const index = parseInt(document.getElementById('entrySelect').value, 10);
+    if (entries.length > 1) {
+      entries.splice(index, 1);
+      updateDropdown();
+      document.getElementById('entrySelect').value = Math.min(index, entries.length - 1);
+      loadEntry();
     } else {
-        alert("At least one entry must remain."); // Prevent removal if only one entry exists
+      alert("At least one entry must remain.");
     }
-}
+  }
 
+  function updateFromJson() {
+    try {
+      const updatedEntries = JSON.parse(document.getElementById('jsonOutput').value);
+      if (Array.isArray(updatedEntries)) {
+        entries = updatedEntries;
+        updateDropdown();
+        document.getElementById('entrySelect').value = 0;
+        loadEntry();
+      } else {
+        alert("Invalid JSON: Must be an array of entries.");
+      }
+    } catch (e) {
+      alert("Invalid JSON: " + e.message);
+    }
+  }
 
   function init() {
-    // Initialize with one example entry
-    entries = [{ subject: "Initial Subject", body: "Initial Body\\nLine 2" }];
     updateDropdown();
     loadEntry();
 
@@ -113,6 +118,7 @@
     document.getElementById('body').addEventListener('input', updateEntry);
     document.getElementById('addEntry').addEventListener('click', addEntry);
     document.getElementById('removeEntry').addEventListener('click', removeEntry);
+    document.getElementById('updateFromJson').addEventListener('click', updateFromJson);
   }
 
   init();
